@@ -1,0 +1,152 @@
+================================================================================
+Single-file small change
+================================================================================
+diff --git a/grammar.js b/grammar.js
+index dc36969..f37fde0 100644
+--- a/grammar.js
++++ b/grammar.js
+@@ -6,6 +6,8 @@ module.exports = grammar({
+   extras: ($) => [],
+ 
+   rules: {
+-    source: ($) => "hello",
++    source: ($) => repeat($._line),
++
++    _line: ($) => choice(),
+   },
+ });
+
+--------------------------------------------------------------------------------
+
+(source
+  (command
+    (filename))
+  (index
+    (commit)
+    (commit)
+    (mode))
+  (old_file
+    (filename))
+  (new_file
+    (filename))
+  (location
+    (linerange)
+    (linerange))
+  (context)
+  (context)
+  (context)
+  (deletion)
+  (addition)
+  (addition)
+  (addition)
+  (context)
+  (context))
+
+================================================================================
+New empty file
+================================================================================
+diff --git a/tmp.txt b/tmp.txt
+new file mode 100644
+index 0000000..e69de29
+
+--------------------------------------------------------------------------------
+
+(source
+  (command
+    (filename))
+  (file_change
+    (mode))
+  (index
+    (commit)
+    (commit)))
+
+================================================================================
+Deleted empty file
+================================================================================
+diff --git a/tmp.txt b/tmp.txt
+deleted file mode 100644
+index e69de29..0000000
+
+--------------------------------------------------------------------------------
+
+(source
+  (command
+    (filename))
+  (file_change
+    (mode))
+  (index
+    (commit)
+    (commit)))
+
+================================================================================
+File rename
+================================================================================
+diff --git a/tmp.txt b/tmp.md
+similarity index 100%
+rename from tmp.txt
+rename to tmp.md
+
+--------------------------------------------------------------------------------
+
+(source
+  (command
+    (filename))
+  (similarity)
+  (file_change
+    (filename))
+  (file_change
+    (filename)))
+
+================================================================================
+Location with no context
+================================================================================
+@@ -0,0 +1 @@
+
+--------------------------------------------------------------------------------
+
+(source
+  (location
+    (linerange)
+    (linerange)))
+
+================================================================================
+No newline at end of file
+================================================================================
+diff --git a/tmp.txt b/tmp.txt
+new file mode 100644
+index 00000000..ee9808dc
+--- /dev/null
++++ b/tmp.txt
+@@ -0,0 +1 @@
++aaa
+\ No newline at end of file
+
+--------------------------------------------------------------------------------
+
+(source
+  (command
+    (filename))
+  (file_change
+    (mode))
+  (index
+    (commit)
+    (commit))
+  (old_file
+    (filename))
+  (new_file
+    (filename))
+  (location
+    (linerange)
+    (linerange))
+  (addition)
+  (context))
+
+================================================================================
+Just a file declaration
+================================================================================
+--- /dev/null
+--------------------------------------------------------------------------------
+
+(source
+  (old_file
+    (filename)))

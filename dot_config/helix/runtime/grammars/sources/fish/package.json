@@ -1,0 +1,44 @@
+{
+  "name": "tree-sitter-fish",
+  "version": "0.0.1",
+  "description": "Fish tree-sitter grammar",
+  "main": "bindings/node",
+  "scripts": {
+    "build": "tree-sitter generate",
+    "build:wasm": "npm run build && tree-sitter build-wasm",
+    "start": "npm run build:wasm && tree-sitter web-ui",
+    "test": "tree-sitter test",
+    "test:watch": "nodemon --ext js,txt,fish,scm --watch grammar.js --watch test --watch queries --exec 'npm run build && npm run test'",
+    "test:examples": "bash ./scripts/test_shared.sh"
+  },
+  "keywords": [
+    "tree-sitter",
+    "fish",
+    "shell",
+    "parser"
+  ],
+  "author": "Krnik",
+  "dependencies": {
+    "nan": "^2.14.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7",
+    "tree-sitter-cli": "^0.20.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krnik/tree-sitter-fish.git"
+  },
+  "homepage": "https://github.com/krnik/tree-sitter-fish#readme",
+  "bugs": {
+    "url": "https://github.com/krnik/tree-sitter-fish/issues"
+  },
+  "tree-sitter": [
+    {
+      "scope": "source.fish",
+      "file-types": [
+        "fish"
+      ]
+    }
+  ]
+}

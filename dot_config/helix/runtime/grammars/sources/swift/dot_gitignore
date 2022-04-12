@@ -1,0 +1,16 @@
+node_modules
+!/src/scanner.c
+!/src/parser.c
+!/src/grammar.json
+!/src/tree_sitter/parser.h
+*.swp
+/build
+/test
+Cargo.lock
+/target/*
+*.a
+*.dylib
+*.so
+*.o
+bindings/c/*.h
+bindings/c/tree-sitter-*.pc

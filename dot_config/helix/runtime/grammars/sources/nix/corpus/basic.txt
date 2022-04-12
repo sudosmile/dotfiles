@@ -1,0 +1,373 @@
+====================
+comments
+====================
+
+# This is a comment.
+
+/*
+This is also a comment.
+*/
+
+"This is a string."
+
+---
+
+(source_expression (comment) (comment) (string))
+
+====================
+identifier
+====================
+
+abc
+
+---
+
+(source_expression (identifier))
+
+====================
+integer
+====================
+
+123
+
+---
+
+(source_expression (integer))
+
+====================
+float
+====================
+
+123.456
+
+---
+
+(source_expression (float))
+
+====================
+string
+====================
+
+"abcdef"
+
+---
+
+(source_expression (string))
+
+====================
+string (complex)
+====================
+
+"${bob} likes crisp $ bills. \${don't interpolate here!}"
+
+---
+
+(source_expression
+    (string
+        (interpolation (identifier))
+        (escape_sequence)))
+
+====================
+indented string
+====================
+
+''
+abc
+def
+ghi
+''
+
+---
+
+(source_expression (indented_string))
+
+====================
+indented string (complex)
+====================
+
+''
+This is just a couple of quotes: '''
+A lone $ doesn't throw things off.
+And of course, ''\${this shouldn't be an interpolation}.
+But ${this} is.
+This works, too:  ''$
+''
+
+---
+
+(source_expression
+    (indented_string
+        (escape_sequence)
+        (escape_sequence)
+        (interpolation (identifier))
+        (escape_sequence)))
+
+====================
+uri
+====================
+
+http://foobar.com:80?baz=quux&blarg=etc
+
+---
+
+(source_expression (uri))
+
+====================
+list (empty)
+====================
+
+[ ]
+
+---
+
+(source_expression (list))
+
+====================
+list
+====================
+
+[ a 1 2.0 ]
+
+---
+
+(source_expression (list (identifier) (integer) (float)))
+
+====================
+if
+====================
+
+if a then b else c
+
+---
+
+(source_expression (if (identifier) (identifier) (identifier)))
+
+====================
+assert
+====================
+
+assert a; b
+
+---
+
+(source_expression (assert (identifier) (identifier)))
+
+====================
+with
+====================
+
+with a; b
+
+---
+
+(source_expression (with (identifier) (identifier)))
+
+====================
+let (empty)
+====================
+
+let in a
+
+---
+
+(source_expression (let (identifier)))
+
+====================
+let (bind)
+====================
+
+let a = b; in c
+
+---
+
+(source_expression
+    (let
+        (bind
+            (attrpath (attr_identifier))
+            (identifier))
+        (identifier)))
+
+====================
+let (bind, comments)
+====================
+
+let
+  # foo
+  a = b;
+  # bar
+  x = y;
+  in
+    # baz
+    c
+
+---
+
+(source_expression
+    (let
+        (comment)
+        (bind (attrpath (attr_identifier)) (identifier))
+        (comment)
+        (bind (attrpath (attr_identifier)) (identifier))
+        (comment)
+        (identifier)))
+
+====================
+let (inherit)
+====================
+
+let inherit a; in c
+
+---
+
+(source_expression
+    (let
+        (inherit
+            (attrs_inherited (identifier)))
+        (identifier)))
+
+====================
+let (inherit from)
+====================
+
+let inherit (a) b "c" ${d}; in 123
+
+---
+
+(source_expression
+    (let
+        (inherit_from
+            (identifier)
+            (attrs_inherited_from (attr_identifier) (string) (interpolation (identifier))))
+        (integer)))
+
+====================
+function
+====================
+
+a: b
+
+---
+
+(source_expression (function (identifier) (identifier)))
+
+====================
+function (with formals)
+====================
+
+a@{ /*1*/ b, /*2*/ c ? 123, /*3*/ ... }: 1.234
+
+---
+
+(source_expression
+    (function
+        (identifier)
+        (formals
+            (comment)
+            (formal (identifier))
+            (comment)
+            (formal (identifier) (integer))
+            (comment)
+            (ellipses))
+        (float)))
+
+====================
+rec. attrset (empty)
+====================
+
+rec { }
+
+---
+
+(source_expression (rec_attrset))
+
+====================
+let attrset (empty)
+====================
+
+let { }
+
+---
+
+(source_expression (let_attrset))
+
+====================
+attrset (empty)
+====================
+
+{ }
+
+---
+
+(source_expression (attrset))
+
+====================
+attr set
+====================
+
+{ a = 1; ${b} = "quux"; "c" = 3.14; x.y.z = <foo>; }
+
+---
+
+(source_expression
+    (attrset
+        (bind (attrpath (attr_identifier)) (integer))
+        (bind (attrpath (interpolation (identifier))) (string))
+        (bind (attrpath (string)) (float))
+        (bind (attrpath (attr_identifier) (attr_identifier) (attr_identifier)) (spath))))
+
+====================
+select
+====================
+
+u.v.${w}."x${y}z"
+
+---
+
+(source_expression
+    (select
+        (identifier)
+        (attrpath
+            (attr_identifier)
+            (interpolation (identifier))
+            (string (interpolation (identifier))))))
+
+====================
+application
+====================
+
+a 1 2.0
+
+---
+
+(source_expression
+    (app
+        (app
+            (identifier)
+            (integer))
+        (float)))
+
+====================
+operators
+====================
+
+square 2 + -pi - 42.0
+
+---
+
+(source_expression
+    (binary
+        (binary
+            (app (identifier) (integer))
+            (unary (identifier)))
+        (float)))
+
+====================
+parens
+====================
+
+(123)
+
+---
+
+(source_expression
+    (parenthesized (integer)))

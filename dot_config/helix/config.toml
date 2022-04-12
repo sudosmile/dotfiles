@@ -1,0 +1,19 @@
+theme = "onedark"
+
+[editor]
+line-number = "relative"
+mouse = true
+auto-completion = true
+idle-timeout = 400
+
+# default settings results in a false positive
+# on this machine so we force true
+true-color = true
+
+[editor.cursor-shape]
+# default is "block"
+# modes are normal, inser and select
+insert = "bar"
+normal = "block"
+select = "underline"
+
